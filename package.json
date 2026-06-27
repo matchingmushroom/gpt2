@@ -1,0 +1,19 @@
+{
+  "name": "great-pickle-taste",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:client": "npm run dev -w client",
+    "dev:admin": "npm run dev -w admin",
+    "build:client": "npm run build -w client",
+    "build:admin": "npm run build -w admin",
+    "lint": "npm run lint -w client && npm run lint -w admin"
+  },
+  "workspaces": [
+    "client",
+    "admin"
+  ],
+  "dependencies": {
+    "html2canvas": "^1.4.1"
+  }
+}

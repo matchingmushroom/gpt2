@@ -1,0 +1,120 @@
+[
+  {
+    "id": "1",
+    "name": "Buff Achar",
+    "slug": "buff-achar",
+    "description": "Traditional Nepali-style spicy buffalo pickle, slow-cooked with mustard oil and Himalayan spices. A household favorite.",
+    "category": "Non-Veg",
+    "isFeatured": true,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 120 },
+      { "label": "500 gm", "weightGrams": 500, "price": 200 },
+      { "label": "1 kg", "weightGrams": 1000, "price": 350 }
+    ],
+    "image": "🥩",
+    "images": [
+      "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=400&fit=crop"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Chicken Achar",
+    "slug": "chicken-achar",
+    "description": "Tender chicken pieces marinated in tangy mustard and pickling spices. Perfect with rice or roti.",
+    "category": "Non-Veg",
+    "isFeatured": true,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 150 },
+      { "label": "500 gm", "weightGrams": 500, "price": 250 }
+    ],
+    "image": "🍗",
+    "images": ["https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "3",
+    "name": "Mula ko Achar",
+    "slug": "mula-ko-achar",
+    "description": "Crispy radish pickle with a fiery kick. Made from sun-dried radish mixed with mustard seeds and chili.",
+    "category": "Veg",
+    "isFeatured": true,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 100 },
+      { "label": "500 gm", "weightGrams": 500, "price": 170 },
+      { "label": "1 kg", "weightGrams": 1000, "price": 300 }
+    ],
+    "image": "🌶️",
+    "images": ["https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "4",
+    "name": "Mix Vegetable Achar",
+    "slug": "mix-vegetable-achar",
+    "description": "A colorful medley of cauliflower, carrot, green beans, and peas pickled in aromatic spices.",
+    "category": "Veg",
+    "isFeatured": true,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 90 },
+      { "label": "500 gm", "weightGrams": 500, "price": 150 }
+    ],
+    "image": "🥕",
+    "images": ["https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "5",
+    "name": "Lapsi Achar",
+    "slug": "lapsi-achar",
+    "description": "Sweet and tangy hog plum pickle, a Nepali delicacy. Slow-cooked with jaggery and roasted spices.",
+    "category": "Fruit",
+    "isFeatured": false,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 110 },
+      { "label": "500 gm", "weightGrams": 500, "price": 190 }
+    ],
+    "image": "🫒",
+    "images": ["https://images.unsplash.com/photo-1590179068383-b9c69aacebd5?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "6",
+    "name": "Pork Achar",
+    "slug": "pork-achar",
+    "description": "Succulent pork pieces cooked in a rich blend of Timur (Sichuan pepper), garlic, and mustard oil.",
+    "category": "Non-Veg",
+    "isFeatured": false,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 180 },
+      { "label": "500 gm", "weightGrams": 500, "price": 300 }
+    ],
+    "image": "🥓",
+    "images": ["https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "7",
+    "name": "Amla Achar",
+    "slug": "amla-achar",
+    "description": "Vitamin C-rich gooseberry pickle with a perfect balance of sour, salty, and spicy flavors.",
+    "category": "Fruit",
+    "isFeatured": false,
+    "skus": [
+      { "label": "300 gm", "weightGrams": 300, "price": 100 },
+      { "label": "500 gm", "weightGrams": 500, "price": 170 }
+    ],
+    "image": "🫐",
+    "images": ["https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=400&h=400&fit=crop"]
+  },
+  {
+    "id": "8",
+    "name": "Ginger Achar",
+    "slug": "ginger-achar",
+    "description": "Thinly sliced young ginger pickled in lemon juice and mustard seeds. A digestive and palate cleanser.",
+    "category": "Veg",
+    "isFeatured": false,
+    "skus": [
+      { "label": "200 gm", "weightGrams": 200, "price": 80 },
+      { "label": "300 gm", "weightGrams": 300, "price": 110 }
+    ],
+    "image": "🫚",
+    "images": ["https://images.unsplash.com/photo-1615484477778-ca3b77940c25?w=400&h=400&fit=crop"]
+  }
+]

@@ -1,0 +1,8 @@
+ ⚠ Port 3000 is in use by process 4828, using available port 3001 instead.
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.100.163:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 11.4s

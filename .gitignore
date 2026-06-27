@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.next/
+*.local
+.env
+.env.local
+.DS_Store
+*.log
+*.tsbuildinfo
+**/products.json
+*- Copy*

@@ -8,6 +8,6 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
   },
-  base: "/admin/",
+  base: "/",
   build: { outDir: "dist" },
 });

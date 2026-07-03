@@ -5,7 +5,8 @@ import { getDocument, setDocument } from "../lib/firestore";
 import { logActivity } from "../utils/activityLog";
 import { toDirectDriveUrl } from "../utils/driveUrl";
 import ImageUploader from "../components/ImageUploader";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, writeBatch, collection, getDocs, query, limit, doc, deleteDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import type { StoreSettings, PaymentSettings, DeliverySettings, NotificationSettings, CreditSettings, BudgetSettings, BackupSettings, LoyaltySettings, FinanceSheetSettings } from "../types";
 import { pushFinanceToSheets, fetchSheetUrl } from "../utils/sheets";
 
@@ -51,6 +52,77 @@ export default function Settings() {
   const [backupTesting, setBackupTesting] = useState(false);
   const [backupRunning, setBackupRunning] = useState(false);
   const [pushingSheet, setPushingSheet] = useState(false);
+  const [resetStep, setResetStep] = useState<"idle" | "confirm" | "deleting">("idle");
+  const [resetConfirmText, setResetConfirmText] = useState("");
+
+  const handleReset = async () => {
+    if (resetConfirmText !== "RESET" || !staff) return;
+    setResetStep("deleting");
+    setError(null);
+    try {
+      const collectionsToClear = [
+        "invoices", "orders", "expenses", "purchases", "batches",
+        "rawMaterials", "blends", "combos", "categories", "coupons",
+        "debtors", "creditors", "suppliers",
+        "accounts", "journalEntries", "fixedAssets", "employees", "payrollRuns",
+        "dailyRegisters", "loyaltyAccounts", "loyaltyTransactions", "activityLog",
+      ];
+
+      for (const colName of collectionsToClear) {
+        const snap = await getDocs(query(collection(db, colName), limit(500)));
+        while (snap.size > 0) {
+          const batch = writeBatch(db);
+          snap.docs.forEach((d) => batch.delete(doc(db, colName, d.id)));
+          await batch.commit();
+          if (snap.size < 500) break;
+        }
+      }
+
+      // Delete products and their SKUs
+      const prodSnap = await getDocs(query(collection(db, "products"), limit(500)));
+      while (prodSnap.size > 0) {
+        const batch = writeBatch(db);
+        for (const prod of prodSnap.docs) {
+          const skuSnap = await getDocs(collection(db, "products", prod.id, "skus"));
+          skuSnap.docs.forEach((s) => batch.delete(doc(db, "products", prod.id, "skus", s.id)));
+          batch.delete(doc(db, "products", prod.id));
+        }
+        await batch.commit();
+        if (prodSnap.size < 500) break;
+      }
+
+      // Reset counters
+      const counterIds = ["orders", "batches", "purchases", "invoices", "otcCoupons", "journalEntries"];
+      for (const id of counterIds) {
+        const ref = doc(db, "counters", id);
+        const snap = await getDocs(query(collection(db, "counters"), limit(1)));
+        if (snap.size > 0) {
+          const batch = writeBatch(db);
+          counterIds.forEach((cid) => batch.set(doc(db, "counters", cid), { seq: 0 }, { merge: true }));
+          await batch.commit();
+          break;
+        }
+      }
+
+      // Delete cache docs
+      const cachePaths = [
+        "dashboard/cache", "reports/pnlCache", "reports/balanceSheetCache",
+        "reports/cashFlowCache", "reports/financePnlCache", "reports/financeBalanceSheetCache",
+      ];
+      for (const p of cachePaths) {
+        const ref = doc(db, p);
+        try { await deleteDoc(ref); } catch { /* doc may not exist */ }
+      }
+
+      setSuccess("All business data has been reset. Staff accounts and settings preserved.");
+      logActivity({ action: "Reset app data", details: "All business collections cleared", module: "Settings", staffId: staff.id, staffName: staff.name });
+      setResetStep("idle");
+      setResetConfirmText("");
+    } catch (e) {
+      setError("Reset failed: " + (e instanceof Error ? e.message : "Unknown error"));
+      setResetStep("idle");
+    }
+  };
 
   useEffect(() => {
     const loadAll = async () => {
@@ -427,6 +499,42 @@ export default function Settings() {
               <button onClick={handleSave} disabled={saving} className="rounded-btn bg-forest-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-forest-green-dark disabled:opacity-60">
                 {saving ? "Saving..." : "Save Changes"}
               </button>
+            </div>
+          )}
+
+          {can("settings.write") && (
+            <div className="mt-8 rounded-lg border-2 border-error/30 bg-error/5 p-6">
+              <h3 className="font-heading text-lg font-bold text-error">Danger Zone</h3>
+              <p className="mt-1 text-sm text-text-light">This will permanently delete all business data including invoices, orders, products, expenses, purchases, combos, coupons, categories, suppliers, debtors, creditors, raw materials, blends, batches, stock adjustments, activity logs, finance data (accounts, journal entries, fixed assets, employees, payroll, daily registers), loyalty data, and cache. Staff accounts and settings will be preserved.</p>
+
+              {resetStep === "idle" ? (
+                <button onClick={() => setResetStep("confirm")} className="mt-3 rounded-btn border border-error px-4 py-2 text-sm font-medium text-error transition-colors hover:bg-error hover:text-white">
+                  Reset App Data
+                </button>
+              ) : resetStep === "confirm" ? (
+                <div className="mt-3 space-y-3">
+                  <p className="text-sm font-semibold text-error">Type <span className="font-mono">RESET</span> to confirm:</p>
+                  <input
+                    value={resetConfirmText}
+                    onChange={(e) => setResetConfirmText(e.target.value)}
+                    className="w-full max-w-xs rounded-input border border-error px-4 py-2 text-sm outline-none focus:border-forest-green"
+                    placeholder="Type RESET"
+                  />
+                  <div className="flex gap-2">
+                    <button onClick={handleReset} disabled={resetConfirmText !== "RESET"} className="rounded-btn bg-error px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-error/80 disabled:opacity-40">
+                      Confirm Reset
+                    </button>
+                    <button onClick={() => { setResetStep("idle"); setResetConfirmText(""); }} className="rounded-btn border border-border px-4 py-2 text-sm font-medium text-text-light transition-colors hover:border-forest-green">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-3 flex items-center gap-2 text-sm text-error">
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-error border-t-transparent" />
+                  Deleting all data...
+                </div>
+              )}
             </div>
           )}
         </div>
